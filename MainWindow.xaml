@@ -15,7 +15,10 @@
         <StackPanel Grid.Row="0">
             <StackPanel Margin="0 0 5 5"  Orientation="Horizontal">
                 <Label>Number of Segments:</Label>
-                <xctk:IntegerUpDown Value="20" Margin="0 0 5 0"  Minimum="1" Maximum="360" Name="NumSegmentsBox" ValueChanged="NumSegmentsChanged"/>
+                <xctk:IntegerUpDown Value="12" Margin="0 0 5 0"  Minimum="1" Maximum="360" Name="NumSegmentsBox" ValueChanged="NumSegmentsChanged"/>
+                <Label>Number of Circles:</Label>
+                <xctk:IntegerUpDown Value="6" Margin="0 0 5 0"  Minimum="1" Maximum="12" Name="NumCirclesBox" ValueChanged="NumCirclesChanged"/>
+
                 <Label>Start Colour:</Label>
                 <xctk:ColorPicker Margin="0 0 5 0" Width="100" SelectedColor="Red" x:Name="startPicker" SelectedColorChanged="ColourChanged"/>
                 <Label>End Colour:</Label>
