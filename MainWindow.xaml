@@ -6,9 +6,10 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:ColourWheelWpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="467.509" Width="761.282">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -18,10 +19,15 @@
                 <xctk:IntegerUpDown Value="12" Margin="0 0 5 0"  Minimum="1" Maximum="360" Name="NumSegmentsBox" ValueChanged="NumSegmentsChanged"/>
                 <Label>Number of Circles:</Label>
                 <xctk:IntegerUpDown Value="6" Margin="0 0 5 0"  Minimum="1" Maximum="12" Name="NumCirclesBox" ValueChanged="NumCirclesChanged"/>
-
-                <Label>Start Colour:</Label>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <StackPanel Margin="0 0 5 5"  Orientation="Horizontal">
+                <Label>Pick Colour Range</Label>
+                <CheckBox Margin="0 6 5 0" Name="PickColorRange" Unchecked="PickStartColorsChecked" Checked="PickStartColorsChecked"/>
+                <Label Name="StartColorLabel">Start Colour:</Label>
                 <xctk:ColorPicker Margin="0 0 5 0" Width="100" SelectedColor="Red" x:Name="startPicker" SelectedColorChanged="ColourChanged"/>
-                <Label>End Colour:</Label>
+                <Label Name="EndColorLabel">End Colour:</Label>
                 <xctk:ColorPicker Margin="0 0 5 0" Width="100" SelectedColor="Blue" x:Name="endPicker" SelectedColorChanged="ColourChanged"/>
             </StackPanel>
         </StackPanel>

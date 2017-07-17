@@ -6,6 +6,7 @@ using SWMColor = System.Windows.Media.Color;
 
 namespace ColourWheelWpf
 {
+    /// Adapted from https://richnewman.wordpress.com/about/code-listings-and-diagrams/hslcolor-class/
     public class HSLColor
     {
         public static SWMColor ToSWMColor(SDColor color) => SWMColor.FromArgb(color.A, color.R, color.G, color.B);
