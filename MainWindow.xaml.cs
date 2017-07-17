@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ColourWheelWpf
@@ -24,7 +15,6 @@ namespace ColourWheelWpf
         {
             InitializeComponent();
         }
-
 
         public struct CircleData
         {
@@ -167,8 +157,8 @@ namespace ColourWheelWpf
                     double colorIndex = (360.0 / (numSegments - 1)) * i;
                     double hue = (double)(i) / numSegments;
                     double saturation = 1;
-                    double luminosity =(((double)j+1) / numCircles)*.9;// 0.1;
-                    Color hsl = HSLColour.ColorFromHSL(hue, saturation, luminosity);
+                    double luminosity = (((double)j+1) / numCircles)*.9;// 0.1;
+                    Color hsl = new HSLColor(hue, saturation, luminosity);
                     //SolidColorBrush brush = new SolidColorBrush(InterpolateColor(startColor, endColor, colorIndex / 360));
                     SolidColorBrush brush = new SolidColorBrush(hsl);
                     WheelCanvas.Children.Add(CreateWheelSegment(thisWheel, start, sweep, brush, false));
