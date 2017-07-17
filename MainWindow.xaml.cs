@@ -65,14 +65,12 @@ namespace ColourWheelWpf
                 SweepDirection = SweepDirection.Clockwise
             };
 
-
             var innerEndPoints = ArcEndPoints(cd.InnerRadius, start, sweep, cd.Centre);
 
             var line1 = new LineSegment
             {
                 Point = innerEndPoints.Item2
             };
-
 
             var arc2 = new ArcSegment
             {
@@ -106,6 +104,7 @@ namespace ColourWheelWpf
 
             return r;
         }
+
         public Color InterpolateColor(Color start, Color end, double v)
         {
             Color c = new Color();
@@ -134,24 +133,13 @@ namespace ColourWheelWpf
             return new HSLColor(interpolatedHue, startHSL.Saturation, startHSL.Luminosity);
         }
 
-        public void DrawColourWheel()
+        private Tuple<HSLColor,HSLColor> SetColourRange(int numSegments)
         {
-            if (WheelCanvas == null) return;
-
-            WheelCanvas.Children.Clear();
-
-            CircleData cd = GetOuterCircle(WheelCanvas);
-
-
-            Brush[] rainbow = { Brushes.Red, Brushes.Orange, Brushes.Yellow, Brushes.Green, Brushes.Blue, Brushes.Indigo, Brushes.Violet };
-
-            int numSegments = NumSegmentsBox.Value.HasValue ? NumSegmentsBox.Value.Value : 12;
-            int numCircles = NumCirclesBox.Value.HasValue ? NumCirclesBox.Value.Value : 3;
-
             var pickerStartColor = startPicker.SelectedColor.HasValue ? startPicker.SelectedColor.Value : Colors.Red;
             var pickerEndColor = endPicker.SelectedColor.HasValue ? endPicker.SelectedColor.Value : Colors.Blue;
 
             bool pickColorRange = PickColorRange.IsChecked.HasValue ? PickColorRange.IsChecked.Value : false;
+
             HSLColor selectedStartColour;
             HSLColor selectedEndColour;
 
@@ -166,6 +154,24 @@ namespace ColourWheelWpf
                 selectedStartColour = new HSLColor(0.0, 1.0, 1.0);
                 selectedEndColour = new HSLColor(lastColourHue, 1.0, 1.0);
             }
+
+            return new Tuple<HSLColor, HSLColor>(selectedStartColour, selectedEndColour);
+        }
+
+        public void DrawColourWheel()
+        {
+            if (WheelCanvas == null) return;
+
+            WheelCanvas.Children.Clear();
+
+            CircleData cd = GetOuterCircle(WheelCanvas);
+
+            Brush[] rainbow = { Brushes.Red, Brushes.Orange, Brushes.Yellow, Brushes.Green, Brushes.Blue, Brushes.Indigo, Brushes.Violet };
+
+            int numSegments = NumSegmentsBox.Value.HasValue ? NumSegmentsBox.Value.Value : 12;
+            int numCircles = NumCirclesBox.Value.HasValue ? NumCirclesBox.Value.Value : 3;
+
+            var endColors = SetColourRange(numSegments);
 
             double startingRadius = cd.OuterRadius;
             double endingRadius = Math.Max(cd.OuterRadius - 100, 1);
@@ -184,14 +190,13 @@ namespace ColourWheelWpf
                 };
 
                 double circleLuminosity = (((double)j + 1) / numCircles) * .9;
-                Color startColour = new HSLColor(selectedStartColour.Hue, 1, circleLuminosity);
+                Color startColour = new HSLColor(endColors.Item1.Hue, 1, circleLuminosity);
                 double endColourHue = (double)(numSegments - 1) / numSegments;
-                Color endColour = new HSLColor(selectedEndColour.Hue, 1, circleLuminosity);
+                Color endColour = new HSLColor(endColors.Item2.Hue, 1, circleLuminosity);
 
                 for (int i = 0; i < numSegments; ++i)
                 {
                     double start = (360.0 / numSegments) * i;
-                    double colorIndex = (360.0 / (numSegments - 1)) * i;
                     SolidColorBrush brush = new SolidColorBrush(IntepolateHSV(startColour,endColour,(double) i/numSegments));
                     WheelCanvas.Children.Add(CreateWheelSegment(thisWheel, start, sweep, brush, false));
                 }
