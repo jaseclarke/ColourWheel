@@ -21,6 +21,8 @@
                 <xctk:IntegerUpDown Value="6" Margin="0 0 5 0"  Minimum="1" Maximum="12" Name="NumCirclesBox" ValueChanged="NumCirclesChanged"/>
                 <Label>Arc Offset:</Label>
                 <xctk:IntegerUpDown Value="0" Margin="0 0 5 0"  Minimum="-45" Maximum="45" Name="ArcOffsetBox" ValueChanged="NumCirclesChanged"/>
+                <Label>Wheel Width:</Label>
+                <xctk:IntegerUpDown Value="100" Margin="0 0 5 0"  Minimum="10" Maximum="500" Name="WheelWidth" ValueChanged="NumCirclesChanged"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1">

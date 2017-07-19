@@ -175,8 +175,9 @@ namespace ColourWheelWpf
 
             var endColors = SetColourRange(numSegments);
 
+            int wheelWidth = WheelWidth.Value.HasValue ? WheelWidth.Value.Value : 100;
             double startingRadius = cd.OuterRadius;
-            double endingRadius = Math.Max(cd.OuterRadius - 100, 1);
+            double endingRadius = Math.Max(cd.OuterRadius - wheelWidth, 1);
             double radiusChange = (startingRadius - endingRadius) / numCircles;
 
             double sweep = (360.0 / numSegments);
