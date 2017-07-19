@@ -37,13 +37,13 @@ namespace ColourWheelWpf
             return cd;
         }
 
-        public Tuple<Point, Point> ArcEndPoints(double r, double start, double sweep, Point centre)
+        public Tuple<Point, Point> ArcEndPoints(double r, double start, double sweep, Point centre, double offsetDegrees)
         {
-            int x1 = (int)(r * Math.Cos((start - 90) * Math.PI / 180) + centre.X);
-            int y1 = (int)(r * Math.Sin((start - 90) * Math.PI / 180) + centre.Y);
+            int x1 = (int)(r * Math.Cos((start - 90 + offsetDegrees) * Math.PI / 180) + centre.X);
+            int y1 = (int)(r * Math.Sin((start - 90 + offsetDegrees) * Math.PI / 180) + centre.Y);
 
-            int x2 = (int)(r * Math.Cos((start + sweep - 90) * Math.PI / 180) + centre.X);
-            int y2 = (int)(r * Math.Sin((start + sweep - 90) * Math.PI / 180) + centre.Y);
+            int x2 = (int)(r * Math.Cos((start + sweep - 90 + offsetDegrees) * Math.PI / 180) + centre.X);
+            int y2 = (int)(r * Math.Sin((start + sweep - 90 + offsetDegrees) * Math.PI / 180) + centre.Y);
 
             return new Tuple<Point, Point>(new Point(x1, y1), new Point(x2, y2));
         }
@@ -53,7 +53,9 @@ namespace ColourWheelWpf
 
             Path segmentPath = new Path { Stroke = Brushes.Black, StrokeThickness = showBorders ? 1 : 0, Fill = fillBrush };
 
-            var outerEndPoints = ArcEndPoints(cd.OuterRadius, start, sweep, cd.Centre);
+            double outerArcOffset = ArcOffsetBox.Value.HasValue ? (double)ArcOffsetBox.Value.Value : 0;
+
+            var outerEndPoints = ArcEndPoints(cd.OuterRadius, start, sweep, cd.Centre, outerArcOffset);
 
             PathFigure pathFigure = new PathFigure();
             pathFigure.StartPoint = outerEndPoints.Item1;
@@ -65,7 +67,7 @@ namespace ColourWheelWpf
                 SweepDirection = SweepDirection.Clockwise
             };
 
-            var innerEndPoints = ArcEndPoints(cd.InnerRadius, start, sweep, cd.Centre);
+            var innerEndPoints = ArcEndPoints(cd.InnerRadius, start, sweep, cd.Centre,0);
 
             var line1 = new LineSegment
             {
@@ -189,7 +191,7 @@ namespace ColourWheelWpf
                     Centre = cd.Centre
                 };
 
-                double circleLuminosity = (((double)j + 1) / numCircles) * .9;
+                double circleLuminosity = numCircles == 1?0.5:(((double)j + 1) / numCircles) * .9;
                 Color startColour = new HSLColor(endColors.Item1.Hue, 1, circleLuminosity);
                 double endColourHue = (double)(numSegments - 1) / numSegments;
                 Color endColour = new HSLColor(endColors.Item2.Hue, 1, circleLuminosity);
