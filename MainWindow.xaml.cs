@@ -48,7 +48,7 @@ namespace ColourWheelWpf
             return new Tuple<Point, Point>(new Point(x1, y1), new Point(x2, y2));
         }
 
-        public Path CreateWheelSegment(CircleData cd, double start, double sweep, Brush fillBrush, bool showBorders)
+        public Path CreateWheelSegment(CircleData cd, double start, double sweep, Brush fillBrush, bool showBorders, bool straightLineArcSegments)
         {
 
             Path segmentPath = new Path { Stroke = Brushes.Black, StrokeThickness = showBorders ? 1 : 0, Fill = fillBrush };
@@ -60,12 +60,23 @@ namespace ColourWheelWpf
             PathFigure pathFigure = new PathFigure();
             pathFigure.StartPoint = outerEndPoints.Item1;
 
-            var arc1 = new ArcSegment
+            PathSegment outerCircleSegment;
+            if (straightLineArcSegments)
             {
-                Size = new Size(cd.OuterRadius, cd.OuterRadius),
-                Point = outerEndPoints.Item2,
-                SweepDirection = SweepDirection.Clockwise
-            };
+                outerCircleSegment = new LineSegment
+                {
+                    Point = outerEndPoints.Item2
+                };
+            }
+            else
+            {
+                outerCircleSegment = new ArcSegment
+                {
+                    Size = new Size(cd.OuterRadius, cd.OuterRadius),
+                    Point = outerEndPoints.Item2,
+                    SweepDirection = SweepDirection.Clockwise
+                };
+            }
 
             var innerEndPoints = ArcEndPoints(cd.InnerRadius, start, sweep, cd.Centre,0);
 
@@ -74,21 +85,32 @@ namespace ColourWheelWpf
                 Point = innerEndPoints.Item2
             };
 
-            var arc2 = new ArcSegment
+            PathSegment innerCircleSegment;
+            if (straightLineArcSegments)
             {
-                Size = new Size(cd.InnerRadius, cd.InnerRadius),
-                Point = innerEndPoints.Item1,
-                SweepDirection = SweepDirection.Counterclockwise
-            };
+                innerCircleSegment = new LineSegment
+                {
+                    Point = innerEndPoints.Item1
+                };
+            }
+            else
+            {
+                innerCircleSegment = new ArcSegment
+                {
+                    Size = new Size(cd.InnerRadius, cd.InnerRadius),
+                    Point = innerEndPoints.Item1,
+                    SweepDirection = SweepDirection.Counterclockwise
+                };
+            }
 
             var line2 = new LineSegment
             {
                 Point = outerEndPoints.Item1
             };
 
-            pathFigure.Segments.Add(arc1);
+            pathFigure.Segments.Add(outerCircleSegment);
             pathFigure.Segments.Add(line1);
-            pathFigure.Segments.Add(arc2);
+            pathFigure.Segments.Add(innerCircleSegment);
             pathFigure.Segments.Add(line2);
 
             PathGeometry pathGeometry = new PathGeometry();
@@ -201,7 +223,7 @@ namespace ColourWheelWpf
                 {
                     double start = (360.0 / numSegments) * i;
                     SolidColorBrush brush = new SolidColorBrush(IntepolateHSV(startColour,endColour,(double) i/numSegments));
-                    WheelCanvas.Children.Add(CreateWheelSegment(thisWheel, start, sweep, brush, false));
+                    WheelCanvas.Children.Add(CreateWheelSegment(thisWheel, start, sweep, brush, false, UseStraightEdges.IsChecked.HasValue?UseStraightEdges.IsChecked.Value:false));
                 }
             }
         }
